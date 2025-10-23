@@ -30,6 +30,7 @@ class Player:
         old_center = self.rect.center
         self.image = pygame.transform.rotate(self.original_image, self.rotation_angle)
         self.rect = self.image.get_rect(center=old_center)
+        self.mask = pygame.mask.from_surface(self.image)
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
@@ -40,6 +41,8 @@ class Player:
         empty_bar = 100 - self.health / 2
         x = self.rect.centerx - bar_width / 2
         y = self.rect.bottom + 5
+        if self.health >= 100:
+            self.health = 100
 
         pygame.draw.rect(screen, (0, 0, 0), (x, y, bar_width, bar_height))
         pygame.draw.rect(screen, (255, 0, 0), (x - bar_width / 2 + empty_bar, y, self.health / 2, bar_height))
