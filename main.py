@@ -57,7 +57,7 @@ def reset_game():
     enemies.clear()
 
     # reset abilities
-    availible_abilities = ["shield", "shield", "shield", "shield"]
+    availible_abilities = []
     active_abilities = {}
     bomb_triggered = {}
     double_fire = False
