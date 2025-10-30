@@ -63,7 +63,7 @@ class Enemy:
         
 enemies = []
 def spawn_enemies():
-    for row in range(0, 1):
-        for col in range(1, 2):
+    for row in range(0, 3):
+        for col in range(0, 9):
             enemy = Enemy(50 + col * 80, 100 + row * 60)
             enemies.append(enemy)

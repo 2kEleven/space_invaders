@@ -47,3 +47,18 @@ class Player:
         pygame.draw.rect(screen, (0, 0, 0), (x, y, bar_width, bar_height))
         pygame.draw.rect(screen, (255, 0, 0), (x - bar_width / 2 + empty_bar, y, self.health / 2, bar_height))
         pygame.draw.rect(screen, (255, 0, 0), (x + bar_width / 2 - 1, y, self.health / 2, bar_height))
+
+    def draw_shield(self, screen):
+        # Create a semi-transparent surface for the shield
+        shield_radius = 60
+        shield_surface = pygame.Surface((shield_radius * 2, shield_radius * 2), pygame.SRCALPHA)
+
+        # Draw a semi-transparent blue circle
+        pygame.draw.circle(shield_surface, (0, 100, 255, 100), (shield_radius, shield_radius), shield_radius)
+
+        # Draw a brighter border for effect
+        pygame.draw.circle(shield_surface, (50, 150, 255, 150), (shield_radius, shield_radius), shield_radius, 3)
+
+        # Blit the shield centered on the player
+        shield_rect = shield_surface.get_rect(center=self.rect.center)
+        screen.blit(shield_surface, shield_rect)
