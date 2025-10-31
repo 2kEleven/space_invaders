@@ -30,5 +30,5 @@ Pygame library
 
 Install dependencies:
 ```bash
-pip install pygame
+install Poetry
 
