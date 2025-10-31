@@ -3,7 +3,7 @@ name = "space-invaders"
 version = "0.1.0"
 description = ""
 authors = [
-    {name = "Teun Ouwehand",email = "teun@nextpertise.nl"}
+    {name = "Mats",email = "mats?@email.tld"}
 ]
 readme = "README.md"
 requires-python = ">=3.12"
