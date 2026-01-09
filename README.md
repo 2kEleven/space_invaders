@@ -26,7 +26,7 @@ Boss enemy with explosion and falling animation
 
 ## contributors:
 
-2KEleven: assets, README and the code
+2KEleven: assets, README and the code                                                                                                                                                   
 teunis90: poetry
 
 ## 📦 Requirements
