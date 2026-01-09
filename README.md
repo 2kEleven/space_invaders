@@ -24,6 +24,11 @@ High score system
 Smooth movement and collisions  
 Boss enemy with explosion and falling animation  
 
+## contributors:
+
+2KEleven: assets, README and the code
+teunis90: poetry
+
 ## 📦 Requirements
 Python 3.10 or higher  
 Pygame library  
