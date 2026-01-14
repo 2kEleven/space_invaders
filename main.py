@@ -1,3 +1,4 @@
+import pygame
 from pygame import KEYDOWN
 
 from giant_enemy import *
@@ -6,6 +7,7 @@ from bullets import *
 from enemy import *
 from bombs import *
 from gui import *
+from coordinates import draw_coords, draw_line_y, draw_line_x, draw_hypotenuse, draw_line_bomb, draw_line_giant_enemy
 import os
 import random
 pygame.init()
@@ -13,6 +15,8 @@ pygame.mixer.init(frequency=11025, size=-16, channels=1, buffer=512)
 
 # music
 music = pygame.mixer.Sound("assets/space_invader.mp3")
+
+behind_the_scenes = False
 
 #clock
 clock = pygame.time.Clock()
@@ -29,7 +33,7 @@ if os.path.exists("high_score.txt"):
 else:
     high_score = 0
 
-# Initialize font for GUI
+# Init font for GUI
 pygame.font.init()
 gui_font = pygame.font.Font(None, 36)
 
@@ -49,7 +53,7 @@ game_over = False
 
 def reset_game():
     global player, score, level, giant_enemies, availible_abilities, active_abilities
-    global bomb_triggered, double_fire, shield, game_started, game_over
+    global bomb_triggered, double_fire, shield, game_started, game_over, behind_the_scenes
 
     # clear lists
     bombs.clear()
@@ -68,7 +72,7 @@ def reset_game():
     score = 0
     level = 1
     giant_enemies = []
-    
+
     # spawn enemies
     spawn_enemies()
 
@@ -76,13 +80,13 @@ def reset_game():
     game_over = False
 def main():
     global player, score, level, giant_enemies, availible_abilities, active_abilities
-    global bomb_triggered, double_fire, shield, high_score, game_started, game_over
+    global bomb_triggered, double_fire, shield, high_score, game_started, game_over, behind_the_scenes, bullet_original_pos
 
     # Initialize game state
     reset_game()
     # invis mouse
     pygame.mouse.set_visible(False)
-    
+
     # running
     Running = True
     while Running:
@@ -128,6 +132,11 @@ def main():
             if event.type == pygame.QUIT:
                 return False  # Exit completely
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_p:
+                    if behind_the_scenes == True:
+                        behind_the_scenes = False
+                    else:
+                        behind_the_scenes = True
                 if event.key == pygame.K_SPACE:
                     if not bullets:
                         if double_fire:
@@ -190,8 +199,15 @@ def main():
             else:
                 drop_bomb = random.randint(1, 500)
             if drop_bomb == 1:
-                bomb = Bomb(enemy.rect.x, enemy.rect.y)
-                bombs.append(bomb)
+                if not enemy.is_falling:
+                    bomb = Bomb(enemy.rect.x, enemy.rect.y, 10, False)
+                    bombs.append(bomb)
+        for giant_enemy in giant_enemies:
+            drop_bomb = random.randint(1, 500)
+            if drop_bomb == 1:
+                if not giant_enemy.is_falling:
+                    bomb = Bomb(giant_enemy.rect.x, giant_enemy.rect.y, 10, True)
+                    bombs.append(bomb)
         for bomb in bombs:
             bomb.move()
             if bomb.rect.y + 20 < 0:
@@ -235,7 +251,7 @@ def main():
                 if enemy.mask.overlap(bullet.mask, offset):
                     if not enemy.is_falling:
                         enemy.start_shot()
-                        score += 20
+                        score += 20 + level * 2
                     bullets.remove(bullet)
                     break
 
@@ -256,7 +272,7 @@ def main():
                 enemies.remove(enemy)
 
         # giant enemy spawn
-        i = random.randint(1, 700)
+        i = random.randint(1, 600)
         if i == 1:
             giant_enemy = Giant_Enemy(50, 100)
             giant_enemies.append(giant_enemy)
@@ -306,9 +322,18 @@ def main():
             chosen_ability = random.choice(list(abilities.keys()))
             availible_abilities.append(chosen_ability)  # Add to available abilities list
 
+
         # Draw GUI (points and level)
         draw_top_gui(screen, score, level, high_score, screen_width)
         draw_available_abilities(screen, availible_abilities, screen_height)
+        if behind_the_scenes == True:
+            draw_coords(screen, screen_width, player, enemies)
+            draw_line_x(screen, player, enemies)
+            draw_line_y(screen, player, enemies)
+            draw_hypotenuse(screen, player, enemies)
+            draw_line_bomb(screen, player, bombs)
+            draw_line_giant_enemy(screen, player, giant_enemies)
+            draw_line_bomb(screen, player, bullets)
 
         # highscore
         if score > high_score:
@@ -326,9 +351,9 @@ def main():
                         double_fire = False
                     elif ability == "time_warp":
                         for enemy in enemies:
-                            enemy.speed = 2.5
+                            enemy.speed = 2
                         for giant_enemy in giant_enemies:
-                            giant_enemy.speed = 2.5
+                            giant_enemy.speed = 2
                     elif ability == "bomb":
                         if ability in bomb_triggered:
                             del bomb_triggered[ability]
@@ -337,9 +362,9 @@ def main():
                     active_abilities[ability] -= 1 / 60
                     if ability == "time_warp":
                         for enemy in enemies:
-                            enemy.speed = 0
+                            enemy.speed = enemy.speed / 2
                         for giant_enemy in giant_enemies:
-                            giant_enemy.speed = 0
+                            giant_enemy.speed = giant_enemy.speed / 2
                     elif ability == "double_fire":
                         double_fire = True
                     elif ability == "bomb":
@@ -357,7 +382,7 @@ def main():
 
         # screen
         pygame.display.update()
-        clock.tick(60)
+        clock.tick(50)
 
     return True  # Allow restart
 

@@ -1,5 +1,6 @@
 bullets = []
 import pygame, math
+bullet_original_pos = []
 class Bullet:
     def __init__(self, x, y, angle_deg):
         self.original_image = pygame.transform.scale(pygame.image.load("assets/bullet.png"), (30, 30))
@@ -12,6 +13,9 @@ class Bullet:
         self.dy = -math.sin(radians) * self.speed
         self.image = pygame.transform.rotate(self.original_image, -self.angle)
         self.time = 0
+
+        if not bullet_original_pos:
+            bullet_original_pos.append((self.rect.x, self.rect.y))
 
     def move(self):
         self.rect.x += self.dx
